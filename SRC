@@ -1,0 +1,83 @@
+CREATE DATABASE
+CREATE TABLE
+INSERT
+SELECT
+UPDATE
+DELETE
+JOIN
+-- Cria o banco de dados "sistema_vendas"
+CREATE DATABASE sistema_vendas;
+
+-- Seleciona o banco de dados "sistema_vendas" para uso
+USE sistema_vendas;
+-- Cria a tabela "Clientes" para armazenar informações dos clientes
+CREATE TABLE Clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    telefone VARCHAR(20)
+);
+-- Cria a tabela "Produtos" para armazenar informações dos produtos
+CREATE TABLE Produtos (
+    id_produto INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    quantidade_estoque INT NOT NULL
+);
+-- Cria a tabela "Vendas" para registrar as vendas realizadas
+CREATE TABLE Vendas (
+    id_venda INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT,
+    id_produto INT,
+    quantidade_vendida INT NOT NULL,
+    data_venda DATE NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente),
+    FOREIGN KEY (id_produto) REFERENCES Produtos(id_produto)
+);
+-- Insere dados na tabela "Clientes"
+INSERT INTO Clientes (nome, email, telefone) VALUES 
+('João Silva', 'joao.silva@email.com', '1234-5678'),
+('Maria Oliveira', 'maria.oliveira@email.com', '8765-4321'),
+('Carlos Santos', 'carlos.santos@email.com', '1234-4321');
+-- Insere dados na tabela "Produtos"
+INSERT INTO Produtos (nome, preco, quantidade_estoque) VALUES 
+('Notebook', 2500.00, 10),
+('Smartphone', 1500.00, 20),
+('Tablet', 1000.00, 15);
+-- Insere dados na tabela "Vendas"
+INSERT INTO Vendas (id_cliente, id_produto, quantidade_vendida, data_venda) VALUES 
+(1, 1, 1, '2024-09-01'),
+(2, 2, 2, '2024-09-02'),
+(3, 3, 1, '2024-09-03'),
+(1, 2, 1, '2024-09-04'),
+(2, 3, 3, '2024-09-05');
+-- Exibe todas as vendas realizadas com o nome do cliente e do produto
+SELECT Vendas.id_venda, Clientes.nome AS Nome_Cliente, Produtos.nome AS Nome_Produto, Vendas.quantidade_vendida, Vendas.data_venda
+FROM Vendas
+JOIN Clientes ON Vendas.id_cliente = Clientes.id_cliente
+JOIN Produtos ON Vendas.id_produto = Produtos.id_produto;
+-- Exibe todas as compras realizadas por um cliente específico (exemplo: Cliente com id_cliente = 1)
+SELECT Vendas.id_venda, Produtos.nome AS Nome_Produto, Vendas.quantidade_vendida, Vendas.data_venda
+FROM Vendas
+JOIN Produtos ON Vendas.id_produto = Produtos.id_produto
+WHERE Vendas.id_cliente = 1;
+-- Exibe o total de vendas realizadas por produto
+SELECT Produtos.nome AS Nome_Produto, SUM(Vendas.quantidade_vendida) AS Total_Vendido
+FROM Vendas
+JOIN Produtos ON Vendas.id_produto = Produtos.id_produto
+GROUP BY Produtos.nome;
+-- Atualiza o estoque de um produto após uma venda (exemplo: Produto com id_produto = 1)
+UPDATE Produtos
+SET quantidade_estoque = quantidade_estoque - (SELECT quantidade_vendida FROM Vendas WHERE id_venda = 1)
+WHERE id_produto = (SELECT id_produto FROM Vendas WHERE id_venda = 1);
+-- Atualiza as informações de um cliente específico (exemplo: Cliente com id_cliente = 1)
+UPDATE Clientes
+SET email = 'novo.email@email.com', telefone = '0000-0000'
+WHERE id_cliente = 1;
+-- Remove uma venda específica (exemplo: Venda com id_venda = 1)
+DELETE FROM Vendas
+WHERE id_venda = 1;
+
+-- Opcionalmente, remove o cliente associado se não houver mais vendas (exemplo: Cliente com id_cliente = 1)
+DELETE FROM Clientes
+WHERE id_cliente = 1 AND NOT EXISTS (SELECT * FROM Vendas WHERE id_cliente = 1);
