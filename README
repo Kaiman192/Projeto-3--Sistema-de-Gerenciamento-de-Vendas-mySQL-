@@ -1,0 +1,42 @@
+# Sistema de Vendas
+
+Este projeto é um sistema básico de gerenciamento de vendas, implementado em MySQL. Ele inclui tabelas para armazenar informações sobre clientes, produtos e vendas. O objetivo é fornecer um exemplo de como criar e manipular um banco de dados relacional para um sistema de vendas.
+
+## Estrutura do Banco de Dados
+
+O banco de dados `sistema_vendas` contém as seguintes tabelas:
+
+- **Clientes**: Armazena informações sobre os clientes.
+  - `id_cliente` (INT, AUTO_INCREMENT, PRIMARY KEY)
+  - `nome` (VARCHAR(100), NOT NULL)
+  - `email` (VARCHAR(100))
+  - `telefone` (VARCHAR(20))
+
+- **Produtos**: Armazena informações sobre os produtos disponíveis para venda.
+  - `id_produto` (INT, AUTO_INCREMENT, PRIMARY KEY)
+  - `nome` (VARCHAR(100), NOT NULL)
+  - `preco` (DECIMAL(10,2), NOT NULL)
+  - `quantidade_estoque` (INT, NOT NULL)
+
+- **Vendas**: Registra as vendas realizadas.
+  - `id_venda` (INT, AUTO_INCREMENT, PRIMARY KEY)
+  - `id_cliente` (INT, FOREIGN KEY referenciando `Clientes.id_cliente`)
+  - `id_produto` (INT, FOREIGN KEY referenciando `Produtos.id_produto`)
+  - `quantidade_vendida` (INT, NOT NULL)
+  - `data_venda` (DATE, NOT NULL)
+
+## Scripts SQL
+
+Os scripts SQL incluídos neste repositório realizam as seguintes operações:
+
+1. **Criação do Banco de Dados e Tabelas**
+2. **Inserção de Dados**
+3. **Consultas para Exibição de Vendas e Estoques**
+4. **Atualização de Dados**
+5. **Exclusão de Dados**
+
+## Como Usar
+
+1. Clone este repositório para sua máquina local:
+   ```bash
+   git clone https://github.com/seu-usuario/sistema_vendas.git
